@@ -1,0 +1,5 @@
+export const environment = {
+  production: true,
+  apiUrl: 'https://your-backend.onrender.com/api',
+  assetBase: 'https://your-backend.onrender.com',
+};

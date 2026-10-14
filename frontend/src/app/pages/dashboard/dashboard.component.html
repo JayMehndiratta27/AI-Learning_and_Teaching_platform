@@ -1,0 +1,91 @@
+<div class="grid gap-6 lg:grid-cols-3">
+  <mat-card class="p-6 lg:col-span-2 lf-glass-card">
+    <div class="flex items-start justify-between gap-4">
+      <div>
+        <p class="text-sm text-slate-500">Welcome back</p>
+        <h1 class="text-2xl font-display font-bold">{{ auth.user()?.full_name }}</h1>
+        <p class="text-slate-500 text-sm">{{ auth.user()?.email }} · {{ auth.user()?.role | titlecase }}</p>
+      </div>
+      <a mat-stroked-button routerLink="/chat">Open AI tutor</a>
+    </div>
+    <mat-progress-bar mode="determinate" [value]="Math.min(100, ((auth.user()?.xp || 0) / 3) % 100)"></mat-progress-bar>
+    <p class="text-xs text-slate-500 mt-2">XP {{ auth.user()?.xp || 0 }} · Streak {{ auth.user()?.streak_days || 0 }} days</p>
+  </mat-card>
+  <mat-card class="p-6 lf-glass-card">
+    <h3 class="font-semibold mb-2">Upcoming focus</h3>
+    <p class="text-sm text-slate-600 dark:text-slate-300">Jump into a quiz or continue your last subject module.</p>
+    <div class="mt-4 flex gap-2 flex-wrap">
+      <a mat-flat-button color="primary" routerLink="/quizzes">Quizzes</a>
+      <a mat-button routerLink="/courses">Courses</a>
+    </div>
+  </mat-card>
+</div>
+
+@if (gamification; as g) {
+  <div class="grid md:grid-cols-3 gap-4 mt-6">
+    <mat-card class="p-4">
+      <p class="text-xs text-slate-500">XP</p>
+      <p class="text-2xl font-bold">{{ g['xp'] }}</p>
+    </mat-card>
+    <mat-card class="p-4">
+      <p class="text-xs text-slate-500">Streak</p>
+      <p class="text-2xl font-bold">{{ g['streak_days'] }} days</p>
+    </mat-card>
+    <mat-card class="p-4">
+      <p class="text-xs text-slate-500">Badges</p>
+      <p class="text-2xl font-bold">{{ ($any(g['badges'])?.length) || 0 }}</p>
+    </mat-card>
+  </div>
+  @if ($any(g)['challenges']?.length) {
+    <mat-card class="p-6 mt-6">
+      <h2 class="text-lg font-semibold mb-3">Daily challenges</h2>
+      <div class="flex flex-wrap gap-3">
+        @for (ch of $any(g)['challenges']; track ch.challenge_id) {
+          <div class="border border-slate-200 dark:border-slate-700 rounded-lg p-3 max-w-xs">
+            <p class="font-medium">{{ ch.title }}</p>
+            <p class="text-xs text-slate-500 mb-2">{{ ch.subject }} · +{{ ch.xp }} XP</p>
+            <button
+              mat-stroked-button
+              [disabled]="($any(g)['completed'] || []).includes(ch.challenge_id)"
+              (click)="completeChallenge(ch.challenge_id)"
+            >
+              {{ ($any(g)['completed'] || []).includes(ch.challenge_id) ? 'Done' : 'Mark complete' }}
+            </button>
+          </div>
+        }
+      </div>
+    </mat-card>
+  }
+}
+
+@if (auth.user()?.role === 'student' || auth.user()?.role === 'teacher' || auth.user()?.role === 'admin') {
+  <mat-card class="p-6 mt-6 lf-glass-card">
+    <div class="flex items-center justify-between mb-4">
+      <h2 class="text-lg font-semibold">AI recommendations</h2>
+      <a mat-button routerLink="/videos">Videos</a>
+    </div>
+    <div class="flex flex-wrap gap-2">
+      @for (item of recs; track $index) {
+        <mat-chip>{{ $any(item).title || $any(item).id }}</mat-chip>
+      } @empty {
+        <p class="text-sm text-slate-500">Complete a quiz to unlock smarter picks.</p>
+      }
+    </div>
+  </mat-card>
+}
+
+@if (teacher) {
+  <mat-card class="p-6 mt-6">
+    <h2 class="text-lg font-semibold mb-2">Teacher analytics</h2>
+    <pre class="text-xs bg-slate-100 dark:bg-slate-900 p-3 rounded overflow-auto">{{ teacher | json }}</pre>
+  </mat-card>
+}
+
+@if (admin) {
+  <mat-card class="p-6 mt-6">
+    <h2 class="text-lg font-semibold mb-2">Admin overview</h2>
+    <pre class="text-xs bg-slate-100 dark:bg-slate-900 p-3 rounded overflow-auto">{{ admin | json }}</pre>
+    <h3 class="mt-4 font-semibold">Users</h3>
+    <pre class="text-xs bg-slate-100 dark:bg-slate-900 p-3 rounded overflow-auto">{{ users | json }}</pre>
+  </mat-card>
+}

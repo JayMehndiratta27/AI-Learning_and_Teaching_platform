@@ -1,0 +1,122 @@
+<mat-toolbar class="lf-toolbar !bg-white/70 dark:!bg-slate-900/70 backdrop-blur-md border-b border-white/20 dark:border-slate-700/60 sticky top-0 z-50">
+  <span class="font-display font-bold text-xl bg-gradient-to-r from-indigo-600 to-violet-600 bg-clip-text text-transparent">LearnFlow</span>
+  <button mat-button routerLink="/">Home</button>
+  <button mat-button (click)="scrollTo('features')">Features</button>
+  <button mat-button (click)="scrollTo('courses')">Courses</button>
+  <button mat-button routerLink="/chat">AI Tutor</button>
+  <button mat-button routerLink="/dashboard">Dashboard</button>
+  <span class="flex-1"></span>
+  <button mat-icon-button (click)="theme.toggle()" aria-label="Toggle theme">
+    <mat-icon>{{ theme.mode() === 'dark' ? 'light_mode' : 'dark_mode' }}</mat-icon>
+  </button>
+  <a mat-stroked-button routerLink="/login" class="!ml-2">Login</a>
+  <a mat-flat-button color="primary" routerLink="/signup" class="!ml-2">Signup</a>
+</mat-toolbar>
+
+<section class="relative overflow-hidden min-h-[88vh] flex items-center" @hero>
+  <div class="absolute inset-0 bg-gradient-to-br from-indigo-600 via-violet-600 to-fuchsia-600 opacity-90"></div>
+  <div class="absolute inset-0 lf-noise"></div>
+  <div class="relative max-w-6xl mx-auto px-6 py-20 grid lg:grid-cols-2 gap-12 items-center text-white">
+    <div>
+      <p class="uppercase tracking-[0.25em] text-xs text-white/80 mb-4">AI-native learning</p>
+      <h1 class="font-display text-4xl md:text-6xl font-bold leading-tight mb-6">
+        Personalized mastery for every learner.
+      </h1>
+      <p class="text-lg text-white/85 mb-8 max-w-xl">
+        LearnFlow blends structured pathways, analytics, and an AI tutor so students stay motivated while teachers see impact.
+      </p>
+      <div class="flex flex-wrap gap-3">
+        <a mat-flat-button class="!bg-white !text-indigo-700" routerLink="/signup">Start free</a>
+        <button mat-stroked-button class="!border-white !text-white" (click)="scrollTo('tutor')">See AI tutor</button>
+      </div>
+    </div>
+    <div class="lf-glass rounded-3xl p-6 shadow-2xl border border-white/20">
+      <div class="flex items-center gap-3 mb-4">
+        <div class="h-10 w-10 rounded-full bg-gradient-to-br from-cyan-300 to-indigo-400"></div>
+        <div>
+          <p class="text-sm text-white/70">Live preview</p>
+          <p class="font-semibold">LearnFlow Tutor</p>
+        </div>
+      </div>
+      <div class="space-y-3 text-sm">
+        <div class="rounded-2xl bg-black/20 p-3">Explain backpropagation like I am new to calculus.</div>
+        <div class="rounded-2xl bg-white/10 p-3">
+          I will use an intuitive analogy with a hill-walking robot adjusting step sizes…
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="features" class="py-20 bg-slate-50 dark:bg-slate-950">
+  <div class="max-w-6xl mx-auto px-6">
+    <h2 class="font-display text-3xl font-bold mb-10 text-slate-900 dark:text-white">Everything your cohort needs</h2>
+    <div class="grid md:grid-cols-3 gap-6">
+      @for (card of [
+        { icon: 'auto_awesome', title: 'AI tutor', body: 'Summaries, explanations, and quiz coaching with offline fallback.' },
+        { icon: 'insights', title: 'Analytics', body: 'Charts for streaks, quiz accuracy, and subject time allocation.' },
+        { icon: 'menu_book', title: 'Rich modules', body: 'PDFs, videos, bookmarks, and downloads wired to the API.' }
+      ]; track card.title) {
+        <div class="lf-glass-card p-6 rounded-2xl border border-slate-200/60 dark:border-slate-800 hover:-translate-y-1 transition">
+          <mat-icon class="text-indigo-600 mb-3">{{ card.icon }}</mat-icon>
+          <h3 class="font-semibold text-lg mb-2">{{ card.title }}</h3>
+          <p class="text-slate-600 dark:text-slate-300 text-sm">{{ card.body }}</p>
+        </div>
+      }
+    </div>
+  </div>
+</section>
+
+<section id="tutor" class="py-20">
+  <div class="max-w-6xl mx-auto px-6 grid lg:grid-cols-2 gap-10 items-center">
+    <div>
+      <h2 class="font-display text-3xl font-bold mb-4">ChatGPT-style academic help</h2>
+      <p class="text-slate-600 dark:text-slate-300 mb-6">
+        Suggested prompts, typing feel, markdown-friendly responses, and persistent history per account.
+      </p>
+      <a mat-flat-button color="primary" routerLink="/login">Open tutor</a>
+    </div>
+    <div class="rounded-3xl border border-dashed border-indigo-200 dark:border-indigo-900 p-8 text-center text-slate-500">
+      Conversations sync to MongoDB for continuity across devices.
+    </div>
+  </div>
+</section>
+
+<section id="courses" class="py-20 bg-slate-50 dark:bg-slate-950">
+  <div class="max-w-6xl mx-auto px-6 text-center">
+    <h2 class="font-display text-3xl font-bold mb-4">Seven subjects, one cohesive journey</h2>
+    <p class="text-slate-600 dark:text-slate-300 mb-8">
+      Mathematics, Science, English, Computer Science, AI, Data Structures, and Operating Systems.
+    </p>
+    <a mat-stroked-button color="primary" routerLink="/dashboard">Browse modules</a>
+  </div>
+</section>
+
+<section class="py-16">
+  <div class="max-w-6xl mx-auto px-6 grid md:grid-cols-3 gap-8 text-center">
+    <div>
+      <p class="text-4xl font-bold text-indigo-600">120k+</p>
+      <p class="text-sm text-slate-500">Study minutes simulated</p>
+    </div>
+    <div>
+      <p class="text-4xl font-bold text-violet-600">4.9</p>
+      <p class="text-sm text-slate-500">Pilot learner satisfaction</p>
+    </div>
+    <div>
+      <p class="text-4xl font-bold text-fuchsia-600">24/7</p>
+      <p class="text-sm text-slate-500">Tutor availability</p>
+    </div>
+  </div>
+</section>
+
+<section class="py-20 bg-gradient-to-r from-indigo-700 to-violet-700 text-white">
+  <div class="max-w-4xl mx-auto px-6 text-center">
+    <h3 class="font-display text-3xl font-bold mb-4">Ship your B.Tech project with confidence</h3>
+    <p class="mb-6 text-white/85">JWT auth, dashboards, quizzes, charts, and deployment-ready configs included.</p>
+    <a mat-flat-button class="!bg-white !text-indigo-700" routerLink="/signup">Create account</a>
+  </div>
+</section>
+
+<footer class="py-10 border-t border-slate-200 dark:border-slate-800 text-center text-sm text-slate-500">
+  LearnFlow © 2026 · Built for modern AI EdTech demos.
+</footer>

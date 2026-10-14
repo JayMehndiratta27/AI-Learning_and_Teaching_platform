@@ -1,0 +1,84 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,600;0,9..40,700;1,9..40,400&display=swap');
+
+/* Minimal box model (Tailwind preflight is off so Material outlines render correctly). */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  font-family: 'DM Sans', Roboto, 'Helvetica Neue', sans-serif;
+  background: #f8fafc;
+  color: #0f172a;
+  font-weight: 400;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  transition:
+    background-color 0.35s ease,
+    color 0.35s ease;
+}
+
+html.dark body {
+  background: #020617;
+  color: #f1f5f9;
+  font-weight: 400;
+}
+
+.lf-glass-card {
+  backdrop-filter: blur(16px);
+  background: rgba(255, 255, 255, 0.72);
+  border: 1px solid rgba(148, 163, 184, 0.35);
+  border-radius: 1rem;
+  box-shadow: 0 20px 60px rgba(15, 23, 42, 0.08);
+}
+
+html.dark .lf-glass-card {
+  background: rgba(15, 23, 42, 0.72);
+  border-color: rgba(71, 85, 105, 0.6);
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.45);
+}
+
+.font-display {
+  font-family: 'DM Sans', system-ui, sans-serif;
+}
+
+/* Improve Material contrast on dark surfaces */
+html.dark .mat-mdc-card {
+  color: #f1f5f9;
+}
+
+/* Material components can keep light-theme text colors even when Tailwind dark is enabled.
+   These overrides make dark-mode typography consistently lighter. */
+html.dark .mat-toolbar {
+  color: #f1f5f9 !important;
+}
+
+html.dark .mat-mdc-sidenav,
+html.dark .mat-mdc-list-item,
+html.dark .mat-mdc-nav-list a {
+  color: #f1f5f9 !important;
+}
+
+/* Auth / forms: consistent Material outline (belt-and-suspenders if any global border sneaks in) */
+.lf-auth-page .mat-mdc-text-field-wrapper .mdc-notched-outline .mdc-notched-outline__leading,
+.lf-auth-page .mat-mdc-text-field-wrapper .mdc-notched-outline .mdc-notched-outline__notch,
+.lf-auth-page .mat-mdc-text-field-wrapper .mdc-notched-outline .mdc-notched-outline__trailing {
+  border-width: 1px;
+}
+
+.lf-auth-page .mat-mdc-form-field.mat-form-field-invalid .mdc-notched-outline__leading,
+.lf-auth-page .mat-mdc-form-field.mat-form-field-invalid .mdc-notched-outline__notch,
+.lf-auth-page .mat-mdc-form-field.mat-form-field-invalid .mdc-notched-outline__trailing {
+  border-color: var(--mat-form-field-error-text-color, #f44336);
+}

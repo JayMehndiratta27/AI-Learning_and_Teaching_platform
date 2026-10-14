@@ -1,0 +1,8 @@
+{
+  "name": "learnflow",
+  "private": true,
+  "scripts": {
+    "start": "bash scripts/dev.sh",
+    "dev": "bash scripts/dev.sh"
+  }
+}

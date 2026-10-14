@@ -1,0 +1,11 @@
+node_modules/
+dist/
+.angular/
+*.log
+.env
+backend/.venv/
+backend/data/
+__pycache__/
+*.pyc
+.DS_Store
+frontend/dist/
