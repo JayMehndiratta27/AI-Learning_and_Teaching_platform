@@ -72,34 +72,9 @@ App: `http://localhost:4200` — expects API at `http://localhost:8000` (see `sr
 
 Register via **Signup** (`/signup`) and choose **Student**, **Teacher**, or **Admin**. Teacher/Admin dashboards call extra analytics endpoints (`/api/teacher/overview`, `/api/admin/stats`, `/api/users/admin/list`).
 
-## Optional ML stack
-
-Core installs include **nltk**, **scikit-learn**, and **numpy**. For heavier NLP (as in many project reports), add separately to avoid bloating every machine:
-
-```text
-# Example (not installed by default):
-transformers
-spacy
-```
-
-Download spaCy models after install: `python -m spacy download en_core_web_sm`.
 
 ## Deployment notes
 
 - **Frontend:** `cd frontend && npm run build` — deploy `dist/learnflow-frontend` to **Netlify** or **Vercel** (SPA fallback to `index.html`).
 - **Backend:** Run Uvicorn on **Render** / **Railway** with `MONGODB_URI` pointing to Atlas; set `CORS_ORIGINS` to your frontend URL.
 - **MongoDB Atlas:** Whitelist your host IP or `0.0.0.0/0` for demos only.
-
-## Screenshots
-
-Add your own screenshots under `docs/screenshots/` and link them here for the project report (landing, dashboard, quiz results, AI tutor, dark mode).
-
-## Security (production checklist)
-
-- Rotate `JWT_SECRET` and use HTTPS everywhere.
-- Do not expose password reset tokens in API responses in production (the demo `forgot-password` response may include a token for local testing).
-- Replace placeholder PDFs with institution-licensed content.
-
-## License
-
-Educational use for your coursework; replace branding and content as required by your institution.
