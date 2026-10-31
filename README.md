@@ -1,80 +1,62 @@
 # LearnFlow — AI Learning & Teaching Platform
 
-LearnFlow is a full-stack EdTech demo: **Angular 19** + **Angular Material** + **Tailwind CSS** + **Chart.js** on the frontend, and **FastAPI** + **MongoDB or embedded SQLite** + **JWT** + **OpenAI (optional)** on the backend. With default `DATABASE_MODE=auto`, if MongoDB is not running the API **automatically uses SQLite** (`backend/data/learnflow.db`) so signup works without Docker. It is structured for a B.Tech major project with clear separation of concerns, REST APIs, role-based access, and deployment-oriented configuration.
+LearnFlow is a full-stack EdTech platform built as a B.Tech major project. The frontend uses **Angular 19**, **Angular Material**, **Tailwind CSS** and **Chart.js**. The backend uses **FastAPI**, **MongoDB** (with an automatic **SQLite** fallback when MongoDB is unavailable), **JWT** authentication, **scikit-learn** for recommendations, and **OpenAI** (optional) for the AI tutor. It follows a clear separation of concerns with REST APIs and role-based access.
+
+## Features
+
+| Area | What it does |
+|------|--------------|
+| **Authentication** | Signup and login with JWT tokens and hashed passwords. Roles: Student, Teacher, Admin. |
+| **Courses & materials** | Subject-wise courses with study PDFs, in-browser PDF preview, a downloads page and bookmarks. |
+| **Videos** | YouTube video library with per-user watch history. |
+| **Quizzes** | Take quizzes, automatic scoring, results history and a leaderboard. |
+| **AI tutor** | Chat with saved history and text summaries. Uses OpenAI when configured, otherwise a built-in offline tutor. |
+| **Recommendations** | Suggests PDFs, videos and quizzes matched to a student's weak subjects using TF-IDF and cosine similarity. |
+| **Progress tracking** | Progress page with Chart.js bar, pie and line charts of study time and quiz performance. |
+| **Gamification** | XP points, daily streaks, badges and challenges. |
+| **Teacher & Admin dashboards** | Teachers see class overview analytics; admins see platform stats and the user list. |
+| **Search** | Search across courses, study materials and videos. |
+| **Notifications** | In-app notifications that can be marked as read. |
+| **Settings** | Update profile, change password and set notification preferences. |
+| **Theme** | Light and dark mode. |
+| **Sample content** | 17 study PDFs plus sample courses, quizzes and videos are seeded automatically on first start. |
+
+## Subjects covered
+
+Mathematics (algebra, calculus, trigonometry), Physics, Chemistry, Biology, English (grammar, vocabulary, writing), and Computer Science (DSA, data structures, DBMS, operating systems, computer networks, AI).
 
 ## Repository layout
 
 | Path | Description |
 |------|-------------|
-| `frontend/` | Angular SPA (standalone components, guards, HTTP interceptor, dashboards, quizzes, chat, charts). |
-| `backend/` | FastAPI API, Mongo (Motor) or SQLite fallback, PDF seeding, AI tutor + sklearn recommendations. |
-| `docker-compose.yml` | Local **MongoDB 7** for development. |
+| `frontend/` | Angular single-page app: standalone components, route guards, HTTP interceptor, pages under `src/app/pages`. |
+| `backend/routes/` | REST API endpoints, one file per feature area. |
+| `backend/ai/` | AI tutor (`chatbot.py`), recommendation engine (`recommendations.py`), NLP helpers (`nlp_utils.py`). |
+| `backend/services/seed_db.py` | Generates the sample PDFs and seeds courses, quizzes and videos. |
+| `backend/database.py`, `sqlite_backend.py` | Storage layer: MongoDB, or SQLite with the same query interface. |
+| `backend/public/pdfs/` | The generated study PDFs. |
 
-## Prerequisites
+## API overview
 
-- **Node.js 20+** and npm (for Angular CLI and build).
-- **Python 3.10+** recommended (3.9 may work if dependencies resolve; the repo targets modern Python typing).
-- **MongoDB** (optional) — Docker Compose or Atlas. If omitted, the backend uses **SQLite** automatically.
+All endpoints are under `/api`:
 
-## Quick start (local)
+| Group | Endpoints |
+|-------|-----------|
+| Auth | `register`, `login`, `me` |
+| Users | update profile, change password, update settings, admin user list |
+| Courses & materials | course list and detail, materials, bookmarks |
+| Videos | video list, watch history |
+| Quizzes | list, take, submit, leaderboard |
+| Chat | send message, history, clear history, summary |
+| Analytics | record progress, personal analytics, recommendations |
+| Gamification | stats, complete challenge |
+| Notifications | list, mark as read |
+| Search | global search |
+| Teacher / Admin | `teacher/overview` (teacher, admin), `admin/stats` (admin) |
 
-### 1. MongoDB (optional)
+Role-restricted endpoints are protected on the backend, not just hidden in the UI.
 
-For a shared Mongo instance instead of SQLite:
+## Tech stack
 
-```bash
-cd "/Users/jaymehndiratta/Desktop/End_sem project"
-docker compose up -d
-```
-
-Default URI: `mongodb://localhost:27017` (database name `learnflow`). Set `DATABASE_MODE=mongo` in `backend/.env` to require Mongo.
-
-### 2. Backend
-
-```bash
-cd backend
-python3 -m venv .venv
-source .venv/bin/activate   # Windows: .venv\Scripts\activate
-pip install -r requirements.txt
-cp .env.example .env
-# Optional: set OPENAI_API_KEY in .env for live LLM replies (otherwise offline tutor text).
-uvicorn main:app --reload --host 0.0.0.0 --port 8000
-```
-
-API base: `http://localhost:8000` — OpenAPI docs at `http://localhost:8000/docs`.
-
-Static PDFs are served from `GET /static/pdfs/...` (files are generated on first startup under `backend/public/pdfs/`).
-
-### 3. Frontend
-
-```bash
-cd frontend
-npm install
-npm start
-```
-
-App: `http://localhost:4200` — expects API at `http://localhost:8000` (see `src/environments/environment.ts`). Production build replaces this with `environment.prod.ts` (`angular.json` `fileReplacements`).
-
-## Environment variables (backend)
-
-| Variable | Purpose |
-|----------|---------|
-| `DATABASE_MODE` | `auto` (default), `mongo`, or `sqlite`. |
-| `SQLITE_PATH` | SQLite file path when using SQLite (default `data/learnflow.db`). |
-| `MONGODB_URI` | Mongo connection string. |
-| `MONGODB_DB_NAME` | Database name (default `learnflow`). |
-| `JWT_SECRET` | **Change in production** — signing key for access tokens. |
-| `ACCESS_TOKEN_EXPIRE_MINUTES` | JWT lifetime (default one week for demos). |
-| `OPENAI_API_KEY` | If set, AI tutor and summary endpoints use OpenAI; else safe offline responses. |
-| `CORS_ORIGINS` | Comma-separated allowed origins (e.g. `http://localhost:4200`). |
-
-## Roles & demo accounts
-
-Register via **Signup** (`/signup`) and choose **Student**, **Teacher**, or **Admin**. Teacher/Admin dashboards call extra analytics endpoints (`/api/teacher/overview`, `/api/admin/stats`, `/api/users/admin/list`).
-
-
-## Deployment notes
-
-- **Frontend:** `cd frontend && npm run build` — deploy `dist/learnflow-frontend` to **Netlify** or **Vercel** (SPA fallback to `index.html`).
-- **Backend:** Run Uvicorn on **Render** / **Railway** with `MONGODB_URI` pointing to Atlas; set `CORS_ORIGINS` to your frontend URL.
-- **MongoDB Atlas:** Whitelist your host IP or `0.0.0.0/0` for demos only.
+**Frontend:** Angular 19, Angular Material, Tailwind CSS, Chart.js, RxJS, TypeScript
+**Backend:** FastAPI, Motor (MongoDB), aiosqlite, python-jose (JWT), passlib/bcrypt, scikit-learn, NLTK, reportlab, OpenAI SDK
